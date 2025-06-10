@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - aws-crt
+  - bufferutil
+  - canvas
+  - prisma
+  - rome
+  - utf-8-validate
