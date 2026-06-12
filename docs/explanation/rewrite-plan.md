@@ -18,7 +18,7 @@
 | 현행 (as-is) | `src/`, [prisma/schema.prisma](../../prisma/schema.prisma), [install.sh](../../install.sh) | 운영 중인 Next.js 13 구현. reference/how-to 문서의 정본. |
 | 신규 (설계, 미구현) | [docs/plan.md](../plan.md), [docs/spec.md](../spec.md) | 재작성 SSOT. 코드는 아직 없음. |
 
-[README.md](../../README.md)도 동일하게 명시한다: `docs/` 아래 파일은 현행 Next.js 런타임의 as-is 설명이 아니라 **교체 대상 아키텍처와 현행에서 이월할 수정 사항**을 문서화한 것이다.
+[README.md](../../README.md)도 동일하게 명시한다: `docs/` 대부분은 현행 Next.js 런타임의 as-is 설명이며, [plan.md](../plan.md)와 [spec.md](../spec.md)만 **교체 대상 아키텍처와 현행에서 이월할 수정 사항**을 문서화한 재작성 설계다.
 
 ## 2. 스택 매핑
 

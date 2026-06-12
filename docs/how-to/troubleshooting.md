@@ -39,9 +39,9 @@ POST()
 
 | 항목 | 내용 |
 | --- | --- |
-| 원인 | [page.tsx](../../src/app/(full)/admin/page.tsx) 의 `AdminPage()`가 비율을 분모 검사 없이 계산한다. 가입률은 `Math.round((registeredUsers.length / users.length) * 100)`, 발급률은 `Math.round((issuedCerts.length / certs.length) * 100)`. 사용자가 0명이면 `0/0 → NaN`, 증명서가 0개이면 `0/0 → NaN`이 된다. |
+| 원인 | 관리자 대시보드와 하위 관리 페이지가 비율을 분모 검사 없이 계산한다. 가입률은 `Math.round((registeredUsers.length / users.length) * 100)`, 발급률은 `Math.round((issuedCerts.length / certs.length) * 100)`. 사용자가 0명이면 `0/0 → NaN`, 증명서가 0개이면 `0/0 → NaN`이 된다. |
 | 조치 | 분모가 0일 때 `0%`로 대체하도록 가드를 추가한다(설계(미구현)). 예: 분모가 `0`이면 비율을 `0`으로 처리. |
-| 위치 | [page.tsx](../../src/app/(full)/admin/page.tsx) 의 `AdminPage()` 가입률·발급률 `Math.round` 식 |
+| 위치 | [admin/page.tsx](../../src/app/(full)/admin/page.tsx), [admin/users/page.tsx](../../src/app/(full)/admin/users/page.tsx), [admin/certs/page.tsx](../../src/app/(full)/admin/certs/page.tsx)의 비율 `Math.round` 식 |
 
 | 카드 | 분자 | 분모 | 0 분모일 때 결과 |
 | --- | --- | --- | --- |

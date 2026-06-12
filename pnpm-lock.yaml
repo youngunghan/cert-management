@@ -56,6 +56,9 @@ importers:
       next-query-params:
         specifier: ^4.2.1
         version: 4.3.1(next@13.4.19(@babel/core@7.27.4)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(use-query-params@2.2.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
+      pdfkit:
+        specifier: ^0.13.0
+        version: 0.13.0
       postcss:
         specifier: 8.4.24
         version: 8.4.24
@@ -105,9 +108,6 @@ importers:
       encoding:
         specifier: ^0.1.13
         version: 0.1.13
-      pdfkit:
-        specifier: ^0.13.0
-        version: 0.13.0
       prisma:
         specifier: ^5.1.1
         version: 5.22.0

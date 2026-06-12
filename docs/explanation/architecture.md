@@ -21,7 +21,7 @@ OUTTA 증명서 발급센터는 단일 Next.js 13 애플리케이션이다. 화�
 | 인증서 디자이너 | Fabric.js (`fabric 6.0.0-beta7`) | **클라이언트측(CSR)** — `CanvasForm.tsx`, `CertPreview.tsx` |
 | QR 코드 | `qrcode ^1.5.3` | 발급 시 검증 URL 인코딩 |
 | 스타일 | Tailwind CSS `3.3.2` | `tailwind.config.js` |
-| 린터 / 포매터 | Rome `^12.1.2` | `rome.json` (ESLint·Prettier 미사용) |
+| 린터 / 포매터 | Next lint 스크립트 + Rome 설정 | `package.json`의 `lint`는 `next lint`, `rome.json`은 Rome 규칙 설정. 별도 ESLint 설정 파일은 없음. |
 | 패키지 매니저 | pnpm `10.11.1` | `package.json`의 `packageManager` |
 
 근거 파일: [package.json](../../package.json), [next.config.js](../../next.config.js).

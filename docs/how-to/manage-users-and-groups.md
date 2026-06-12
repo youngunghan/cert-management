@@ -21,7 +21,7 @@
 
 `Admin` 그룹과 최초 관리자 계정은 [auth.ts](../../src/lib/auth.ts) 의 `signIn` 콜백에서 자동 생성된다.
 
-- `DEFAULT_ADMIN_EMAIL` 환경 변수와 일치하는 이메일로 Google 로그인하면, `Admin` 그룹이 없을 경우 생성하고 해당 사용자를 그 그룹에 연결한다.
+- `DEFAULT_ADMIN_EMAIL` 환경 변수와 일치하는 이메일로 Google 로그인하면, `Admin` 그룹이 없을 경우 생성한다. 해당 이메일의 `User`가 없을 때만 새 사용자 생성과 `Admin` 그룹 연결을 함께 수행한다. 이미 존재하는 default admin의 `googleId`/그룹 멤버십 재보장은 현행 코드에서 수행하지 않는다.
 - 그 외 이메일은 사전에 `User` 레코드가 존재해야 로그인되며, 없으면 `/unregistered` 로 리다이렉트된다.
 
 > 시크릿 평문은 본 문서에 싣지 않는다. 키 이름(`DEFAULT_ADMIN_EMAIL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`)만 참조한다.
@@ -80,9 +80,10 @@
 | --- | --- |
 | `200` `{ result: true }` | 삭제 성공 |
 | `404` Not Found | 대상 `id` 의 사용자 없음 |
+| `409` Conflict | 대상 사용자를 참조하는 `CertificateLog` 가 있어 DB 제약상 삭제할 수 없음 |
 | `401` / `403` | [§1](#1-사전-조건과-권한-모델) 가드 위반 |
 
-삭제 전 `id` 형식 검증은 없으며, 존재 여부만 `findUnique` 로 확인한다.
+삭제 전 `id` 형식 검증은 없으며, 존재 여부만 `findUnique` 로 확인한다. `CertificateLog.userId` 는 DB에서 `ON DELETE RESTRICT` 이므로 발급 이력이 있는 사용자는 삭제할 수 없고 `409` 로 응답한다.
 
 ## 3. 그룹 관리
 
@@ -111,7 +112,7 @@
 | 응답 | 조건 |
 | --- | --- |
 | `200` `{ result: true }` | 삭제 성공 |
-| `400` Bad Request | `id` 누락 또는 `validator.isUUID` 실패 |
+| `400` Bad Request | `id` 누락, `validator.isUUID` 실패, 또는 대상 그룹이 `Admin` 그룹이라 삭제할 수 없음 |
 | `404` Not Found | 대상 `id` 의 그룹 없음 |
 | `401` / `403` | [§1](#1-사전-조건과-권한-모델) 가드 위반 |
 

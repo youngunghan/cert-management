@@ -28,6 +28,8 @@ export default function IssueButton({ certId }: Props) {
     const a = document.createElement("a");
     a.href = data.url;
     a.click();
+
+    setLoading(false);
   };
 
   return (

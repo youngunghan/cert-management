@@ -2045,7 +2045,7 @@ class PendingS3Cleanup(Base):
 | 10 | 테스트 없음 | | §10 매트릭스 + Coverage 게이트. |
 | 11 | [auth.ts:36](../src/lib/auth.ts#L36) | default admin 이메일 사용자가 이미 있으면 `googleId`/Admin 연결 보장 안 됨 | idempotent upsert + 항상 Admin 그룹 보장. default admin은 google_id "다르면 거부" 규칙도 우회(복구 경로). |
 | 12 | [issue/route.ts:137](../src/app/api/certs/[id]/issue/route.ts#L137) | 로그를 먼저 만들고 이후 PDF/S3 실패 시 검증 페이지만 유효해질 수 있음 | `log_id` 선생성 → PDF 합성 → S3 PUT → DB INSERT → presign. 모든 실패 단계에서 보상(§5.5). |
-| 13 | [groups/[id]/route.ts:68](../src/app/api/groups/[id]/route.ts#L68) | `Admin` 그룹 삭제 보호가 UI에만 있음 | DELETE 거부 + PUT에서 (a) 현재 이름이 Admin인 그룹 변경 거부 (b) 새 이름이 Admin인 PUT 거부 (§4.4). |
+| 13 | [groups/[id]/route.ts](../src/app/api/groups/[id]/route.ts) | 현행 DELETE는 `Admin` 그룹을 서버에서 거부함. PUT/이름 변경 라우트는 없음 | 재작성은 DELETE 거부 유지 + PUT에서 (a) 현재 이름이 Admin인 그룹 변경 거부 (b) 새 이름이 Admin인 PUT 거부 (§4.4). |
 | 14 | [lib/dataURI.ts:9](../src/lib/dataURI.ts#L9) + [api/certs/route.ts:78](../src/app/api/certs/route.ts#L78) + [api/images/[id]/route.ts:52](../src/app/api/images/[id]/route.ts#L52) | data URI MIME 그대로 신뢰 → `text/html`/SVG로 stored XSS → 세션 쿠키 탈취 가능 | (a) 업로드 시 `{image/png,jpeg,webp}` 화이트리스트 + Pillow 매직 바이트 + RGB 재인코딩(EXIF 제거), (b) S3 metadata에 신뢰된 MIME 저장, (c) GET 응답은 신뢰된 MIME echo + `nosniff` + CSP (§4.5/§8/§8.3). |
 | 15 | [auth.ts:15](../src/lib/auth.ts#L15) | `email_verified` 미검증 → Google 미인증 이메일로 사전등록 계정 탈취 + `google_id` 무조건 덮어쓰기 | (a) `email_verified === true` 강제, (b) `google_id` NULL이거나 같은 sub일 때만 set; 다르면 401 `account_linked_to_different_google_identity`(default admin 예외), (c) IntegrityError → `duplicate_google_id`. (§3.1) |
 | 16 | 모든 변경 라우트 | CSRF 미보호 (쿠키 인증만) | `CsrfMiddleware` 전역 적용: Origin/Referer allowlist + `X-Requested-With: fetch` 강제 (§8.1). |

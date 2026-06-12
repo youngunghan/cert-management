@@ -28,7 +28,7 @@ export default function GroupAddDialog({ open, onClose }: Props) {
 
     setLoading(true);
 
-    await fetch("/api/groups", {
+    const response = await fetch("/api/groups", {
       method: "POST",
       credentials: "include",
       body: JSON.stringify({
@@ -37,6 +37,13 @@ export default function GroupAddDialog({ open, onClose }: Props) {
     });
 
     setLoading(false);
+
+    if (!response.ok) {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "사용자 그룹 추가에 실패했습니다.");
+      return;
+    }
+
     setName("");
     onClose();
 

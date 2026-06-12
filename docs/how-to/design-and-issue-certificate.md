@@ -101,7 +101,7 @@
 4. **키 치환**: 업로드 후 `content.image.data = filename` — data URI를 S3 객체 키(파일명만)로 덮어쓴다. 따라서 DB에 저장되는 `content.image.data` 는 `<uuid>.<ext>` 형태이다.
 5. **레코드 생성**: `prisma.certificate.create` 로 저장. `content` 는 `JSON.stringify(content)`, `issuedAt` 은 `new Date(\`${issuedAt}T00:00:00Z\`)`(UTC 자정), `userIds` 는 사용자 id 배열. 성공 시 201, 실패 시 500.
 
-응답·DTO 형태는 [reference/api.md](../reference/api.md) 참조.
+응답·DTO 형태는 [API Reference](../reference/api-reference.md) 참조.
 
 ## 3. 발급 단계 (Certificate → PDF)
 
@@ -154,7 +154,7 @@ W·H 도 동일 함수로 변환된다(좌표·치수 모두 같은 스케일).
 
 🟢 의도된 제한: `String.replace` 는 각 치환자를 첫 번째 일치만 치환한다. 동일 치환자를 한 텍스트에 두 번 이상 넣으면 두 번째부터는 치환되지 않는다.
 
-각 텍스트는 `doc.font("data/ChosunGs.ttf", h).text(data, x, y, { align: "center", width: w, height: h }).rect(x, y, w, h)` 로 그려진다. 폰트 크기로 변환된 높이 `h` 를 사용하며, 디버그성으로 `rect` 외곽선도 함께 그려진다. 치환자·좌표 규칙의 배경은 [reference/cert-content-schema.md](../reference/cert-content-schema.md) 와 [explanation/rendering-pipeline.md](../explanation/rendering-pipeline.md) 참조.
+각 텍스트는 `doc.font("data/ChosunGs.ttf", h).text(data, x, y, { align: "center", width: w, height: h }).rect(x, y, w, h)` 체인으로 배치된다. 폰트 크기로 변환된 높이 `h` 를 사용한다. 치환자·좌표 규칙의 배경은 [reference/cert-content-schema.md](../reference/cert-content-schema.md) 참조.
 
 **QR 코드** — `QRcode.toDataURL(\`${process.env.BASE_URL}/validate/${certLog.id}\`, { width: 512 })` 로 생성한 data URI를 `content.rects` 각 위치에 `doc.image(qrcodeString, x, y, { fit: [w, h] })` 로 배치한다. QR이 인코딩하는 URL은 `BASE_URL/validate/<certLog.id>` 이다.
 
@@ -182,13 +182,13 @@ W·H 도 동일 함수로 변환된다(좌표·치수 모두 같은 스케일).
 2. `prisma.certificateLog.findUnique({ where: { id }, include: { certificate: true, user: true } })`.
 3. 레코드가 없으면 `InvalidPage`, 있으면 "유효한 증명서입니다." 화면에 `user.name`, `cert.createdAt.toLocaleString("ko-KR")`(발급 시각), `certificate.name` 을 표시.
 
-🟢 의도된 제한: 검증은 `CertificateLog` 의 **존재 여부**만 확인한다. PDF 내용·서명·해시 대조는 없으며, 동일 증명서를 여러 번 발급하면 발급 횟수만큼 서로 다른 `certLog.id`(따라서 서로 다른 QR/검증 URL)가 생긴다. 검증 모델의 설계 의도는 [explanation/validation-model.md](../explanation/validation-model.md) 참조.
+🟢 의도된 제한: 검증은 `CertificateLog` 의 **존재 여부**만 확인한다. PDF 내용·서명·해시 대조는 없으며, 동일 증명서를 여러 번 발급하면 발급 횟수만큼 서로 다른 `certLog.id`(따라서 서로 다른 QR/검증 URL)가 생긴다.
 
 ## 5. 관련 문서
 
 | 문서 | 내용 |
 | --- | --- |
 | [reference/cert-content-schema.md](../reference/cert-content-schema.md) | `CertContent` 필드·orientation·좌표계 정본 |
-| [reference/api.md](../reference/api.md) | `/api/certs`, `/api/certs/:id/issue` 요청·응답 스펙 |
-| [explanation/rendering-pipeline.md](../explanation/rendering-pipeline.md) | 캔버스→PDF 좌표·치환자 변환 배경 |
-| [explanation/validation-model.md](../explanation/validation-model.md) | 로그 기반 검증 모델 설계 의도 |
+| [reference/api-reference.md](../reference/api-reference.md) | `/api/certs`, `/api/certs/:id/issue` 요청·응답 스펙 |
+| [explanation/architecture.md](../explanation/architecture.md) | 캔버스→PDF→S3 발급 파이프라인 배경 |
+| [explanation/security-and-known-issues.md](../explanation/security-and-known-issues.md) | 로그 기반 검증 모델의 제한과 보안 이슈 |

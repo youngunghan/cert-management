@@ -29,7 +29,7 @@ export default async function AdminGroupPage() {
         <Header />
         <section className="mt-6 p-6">
           <a className="flex items-center" href="/admin/groups">
-            <h2 className="text-2xl font-semibold">사용자 그룹</h2>'
+            <h2 className="text-2xl font-semibold">사용자 그룹</h2>
           </a>
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-x-6">
             <div className="p-6 rounded-lg shadow-lg">

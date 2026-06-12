@@ -7,9 +7,10 @@ This repository contains the current certificate management platform based on th
   Vite + React + FastAPI.
 - [docs/spec.md](docs/spec.md): target implementation spec for the rewrite.
 
-The files under `docs/` are not a description of the current Next.js runtime as-is.
-They document the intended replacement architecture and the fixes that should be
-carried over from the current implementation.
+Most files under `docs/` describe the current Next.js runtime as-is. The
+exceptions are [docs/plan.md](docs/plan.md) and [docs/spec.md](docs/spec.md),
+which describe the intended Vite + React + FastAPI rewrite and the fixes that
+should be carried over from the current implementation.
 
 ## Features
 

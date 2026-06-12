@@ -28,12 +28,19 @@ function UserInfoContent({ user, groups, onlyAdmin, onClose }: ContentProps) {
   const onDelete = async () => {
     setLoading(true);
 
-    await fetch(`/api/users/${user.id}`, {
+    const response = await fetch(`/api/users/${user.id}`, {
       method: "DELETE",
       credentials: "include",
     });
 
     setLoading(false);
+
+    if (!response.ok) {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "사용자 삭제에 실패했습니다.");
+      return;
+    }
+
     onClose();
     router.refresh();
   };
@@ -41,7 +48,7 @@ function UserInfoContent({ user, groups, onlyAdmin, onClose }: ContentProps) {
   const onSubmit = async () => {
     setLoading(true);
 
-    await fetch(`/api/users/${user.id}`, {
+    const response = await fetch(`/api/users/${user.id}`, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify({
@@ -51,6 +58,11 @@ function UserInfoContent({ user, groups, onlyAdmin, onClose }: ContentProps) {
     });
 
     setLoading(false);
+
+    if (!response.ok) {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "사용자 수정에 실패했습니다.");
+    }
   };
 
   return (

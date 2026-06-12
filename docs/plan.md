@@ -41,7 +41,7 @@
      - [admin/groups/page.tsx:32](<../src/app/(full)/admin/groups/page.tsx#L32>) — 잉여 `'` 문자.
      - [src/lib/auth.ts:36](../src/lib/auth.ts#L36) — default admin이 이미 존재하면 `googleId`/Admin 연결 보장 안 됨.
      - [api/certs/[id]/issue/route.ts:137](../src/app/api/certs/[id]/issue/route.ts#L137) — `CertificateLog` 먼저 생성 후 PDF/S3 실패 시 "검증은 유효한데 PDF 없음" 상태.
-     - [api/groups/[id]/route.ts:68](../src/app/api/groups/[id]/route.ts#L68) — Admin 그룹 삭제 보호 서버 부재 (PUT/이름 변경도 미차단).
+     - [api/groups/[id]/route.ts](../src/app/api/groups/[id]/route.ts) — Admin 그룹 DELETE는 서버에서 차단됨. 재작성에서는 PUT/이름 변경 우회까지 차단.
      - [issue/route.ts:120-135](../src/app/api/certs/[id]/issue/route.ts#L120) — `forEach(async)` 폰트 복사 race + Lambda 등 read-only FS에서 폰트 없이 렌더(Hangul 깨짐).
      - 응답 envelope `{result, data, error}` → FastAPI 표준 `{detail}` + Pydantic. FE의 모든 fetch 핸들러를 HTTP status 기반으로 교체.
 5. **테스트 코드 없음** — 단위/통합 테스트 0건. 새로 짤 때 pytest + Vitest + Playwright로 처음부터 (Coverage 게이트 §10.3).

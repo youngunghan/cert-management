@@ -55,13 +55,13 @@
 - `[id]/route.ts` 의 `POST()`는 `groups`가 누락/비배열이어도 `groups.map`을 호출하므로 런타임 throw 가능성도 있다(확인 필요: 클라이언트가 항상 배열을 보낸다는 보장 없음).
 - 권한 검사는 이름 문자열 `"Admin"` 매칭이 유일한 진실 출처이므로, 마지막 Admin demote는 곧 영구 잠금이다([§1.4](#14-delete-apigroupsid--admin-그룹-삭제-보호-부재)와 동일한 단일 진실 출처 문제).
 
-### 1.4 `DELETE /api/groups/:id` — Admin 그룹 삭제 보호 부재
+### 1.4 `DELETE /api/groups/:id` — Admin 그룹 삭제 보호 ✅
 
 [route.ts](../../src/app/api/groups/[id]/route.ts) 의 `DELETE()`.
 
-- 호출자 Admin 여부와 `id`의 UUID 형식(`validator.isUUID`)만 검증한 뒤, 대상 그룹 이름과 무관하게 `prisma.group.delete()`를 실행한다.
-- **`Admin` 그룹 자체를 삭제할 수 있다.** 권한 검사가 `g.name === "Admin"` 기반이므로 Admin 그룹이 사라지면 어떤 사용자도 관리자 권한을 가질 수 없게 되어 **시스템 영구 잠금**.
-- 이 라우트에는 PUT(이름 변경) 핸들러가 없으나, 재작성 설계는 이름 변경 우회까지 차단한다(미구현, [§5](#5-이슈-추적-표) 참조).
+- 현행 `DELETE()`는 호출자 Admin 여부와 `id`의 UUID 형식(`validator.isUUID`)을 검증한 뒤, 대상 그룹이 `Admin`이면 `400 Bad Request`로 거부한다.
+- 권한 검사가 `g.name === "Admin"` 기반이므로 이 서버 가드는 시스템 잠금을 막는 필수 방어다.
+- 이 라우트에는 PUT(이름 변경) 핸들러가 없다. 재작성 설계는 이름 변경 우회까지 차단한다(미구현, [§5](#5-이슈-추적-표) 참조).
 
 ### 1.5 변경 라우트 CSRF 미보호
 
@@ -161,7 +161,7 @@
 | data URI MIME 신뢰 → 스토어드 XSS | 🔴 | `dataURItoUint8Array()` ([dataURI.ts](../../src/lib/dataURI.ts)) · `POST()` ([certs/route.ts](../../src/app/api/certs/route.ts)) · `GET()` ([images/[id]/route.ts](../../src/app/api/images/[id]/route.ts)) | §4.5 / §4.2.1 (MIME 화이트리스트 + Pillow 매직 바이트 + 신뢰 MIME echo + nosniff/CSP), §8.3 |
 | `email_verified` 미검증 + `googleId` 무조건 덮어쓰기 → 계정 탈취 | 🔴 | `signIn` 콜백 ([auth.ts](../../src/lib/auth.ts)) | §3.1 (email_verified 강제, google_id 조건부 set, IntegrityError→duplicate_google_id) |
 | untrusted `groups` → 자기 demote / 마지막 admin 잠금 | 🔴 | `POST()` ([users/route.ts](../../src/app/api/users/route.ts)) · `POST()` ([users/[id]/route.ts](../../src/app/api/users/[id]/route.ts)) | §4.3.1 / §4.3.2 (Pydantic UserCreate/UserUpdate + group_ids 존재 검증 + self-demote/마지막 Admin 가드) |
-| Admin 그룹 삭제 보호 부재 | 🔴 | `DELETE()` ([groups/[id]/route.ts](../../src/app/api/groups/[id]/route.ts)) | §4.4 (DELETE 거부 + PUT 현재/새 이름 Admin 거부) |
+| Admin 그룹 삭제 보호 | ✅ | `DELETE()` ([groups/[id]/route.ts](../../src/app/api/groups/[id]/route.ts)) | 현행 DELETE 거부 반영. 재작성은 §4.4에서 PUT 현재/새 이름 Admin 거부까지 추가 |
 | 변경 라우트 CSRF 미보호 | 🔴 | 모든 변경 핸들러(certs/users/groups/issue `POST`/`DELETE`) | §8.1 (`CsrfMiddleware`: Origin/Referer allowlist + `X-Requested-With: fetch`) |
 | orphan `CertificateLog` (PDF/S3 전 생성) | 🟠 | `POST()` ([issue/route.ts](../../src/app/api/certs/[id]/issue/route.ts)) | §5.5 (log_id 선생성 → PDF → S3 PUT → DB INSERT → presign, 단계별 보상) |
 | `Certificate.expiresAt` 만료 미검사 | 🟠 | `POST()` ([issue/route.ts](../../src/app/api/certs/[id]/issue/route.ts)) | §4.2.2 (미만료 사전 가드, 만료 시 `410 certificate_expired`) |

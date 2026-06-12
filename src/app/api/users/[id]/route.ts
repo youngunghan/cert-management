@@ -1,4 +1,4 @@
-import { Group } from "@prisma/client";
+import { Group, Prisma } from "@prisma/client";
 import authOptions from "lib/auth";
 
 import { prisma } from "lib/prisma";
@@ -132,11 +132,28 @@ export async function DELETE(req: Request) {
     });
   }
 
-  await prisma.user.delete({
-    where: {
-      id: userId,
-    },
-  });
+  try {
+    await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2003"
+    ) {
+      return ResponseDTO.status(409).json({
+        result: false,
+        error: {
+          title: "Conflict",
+          message: "User has certificate logs and cannot be deleted",
+        },
+      });
+    }
+
+    throw e;
+  }
 
   return ResponseDTO.status(200).json({
     result: true,

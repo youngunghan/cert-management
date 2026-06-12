@@ -43,7 +43,7 @@ export default function UserAddDialog({ open, onClose, groups }: DialogProps) {
 
     setLoading(true);
 
-    await fetch("/api/users", {
+    const response = await fetch("/api/users", {
       method: "POST",
       credentials: "include",
       body: JSON.stringify({
@@ -55,6 +55,13 @@ export default function UserAddDialog({ open, onClose, groups }: DialogProps) {
     });
 
     setLoading(false);
+
+    if (!response.ok) {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "사용자 추가에 실패했습니다.");
+      return;
+    }
+
     clear();
     onClose();
 

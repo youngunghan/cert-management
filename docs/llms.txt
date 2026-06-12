@@ -13,7 +13,7 @@
 
 ## Reference
 - [reference/api-reference.md](reference/api-reference.md) : 전 라우트 명세 + {result,data,error} envelope
-- [reference/data-model.md](reference/data-model.md) : Prisma 4 모델 스키마(Group/User/Certificate/CertificateLog)
+- [reference/data-model.md](reference/data-model.md) : Prisma 5 모델 스키마(Group/User/Certificate/CertificateLog)
 - [reference/cert-content-schema.md](reference/cert-content-schema.md) : CertContent 캔버스 레이아웃 JSON
 - [reference/configuration.md](reference/configuration.md) : 환경변수 레퍼런스
 

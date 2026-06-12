@@ -101,9 +101,13 @@ export default function Form({ users }: Props) {
       credentials: "include",
     });
 
-    console.log(result);
-
     setLoading(false);
+
+    if (!result.ok) {
+      const { error } = await result.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "증명서 등록에 실패했습니다.");
+      return;
+    }
 
     window.location.href = "/admin/certs";
   };
@@ -115,7 +119,7 @@ export default function Form({ users }: Props) {
       <UserForm file={file} {...userState} />
       <div className={`${file ? "block" : "hidden"} mt-3`}>
         <p className="text-xl">
-          <span className="font-semibold">3.</span> 증명서 정보를 입력해 주세요
+          <span className="font-semibold">4.</span> 증명서 정보를 입력해 주세요
         </p>
         <div className="mt-3">
           <p className="font-semibold text-gray-600">
@@ -143,7 +147,7 @@ export default function Form({ users }: Props) {
         </div>
         <div className="mt-3">
           <p className="font-semibold text-gray-600">
-            증명서 발급일자<span className="text-red-500">*</span>
+            증명서 설명
           </p>
           <textarea
             className="w-full rounded-md p-2 border border-gray-300 focus:outline-none"
@@ -158,7 +162,9 @@ export default function Form({ users }: Props) {
         <button
           type="button"
           onClick={createCert}
-          disabled={loading || !selectedUsers.length}
+          disabled={
+            loading || !selectedUsers.length || !name.trim() || !issueDate
+          }
           className="mt-6 py-2 px-4 bg-blue-500 focus:bg-blue-600 text-white rounded-md disabled:opacity-50"
         >
           증명서 등록하기

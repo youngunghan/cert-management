@@ -17,7 +17,7 @@
 | 인증 | Google OAuth (next-auth) | [auth.ts](../../src/lib/auth.ts) 의 `GoogleProvider` |
 | 오브젝트 스토리지 | AWS S3 또는 S3 호환 | [route.ts](../../src/app/api/certs/[id]/issue/route.ts) 의 `S3Client` |
 
-> 🟢 증명서 **발급**([§8](#8-본인-증명서-발급))은 S3에 PDF를 업로드·서명 URL을 발급한다([route.ts](../../src/app/api/certs/[id]/issue/route.ts) 의 `POST()`). 로그인·사용자 등록·템플릿 생성까지는 S3 없이 동작하지만, 실제 발급을 끝까지 보려면 S3(호환) 버킷이 필요하다.
+> 🟢 증명서 **템플릿 생성과 발급**은 모두 S3(호환) 버킷이 필요하다. 템플릿 생성([route.ts](../../src/app/api/certs/route.ts) 의 `POST()`)은 배경 이미지를 `certs/images/<key>`로 업로드하고, 발급([route.ts](../../src/app/api/certs/[id]/issue/route.ts) 의 `POST()`)은 PDF를 `certs/issued/<logId>.pdf`로 업로드한 뒤 서명 URL을 발급한다. 로그인·사용자/그룹 등록은 S3 없이도 동작한다.
 
 ## 2. 의존성 설치
 
@@ -25,7 +25,7 @@
 pnpm install
 ```
 
-[package.json](../../package.json)에 `packageManager`가 `pnpm@10.11.1`로 고정되어 있으므로 pnpm을 사용한다. 네이티브 모듈(`canvas`, `pdfkit`, `bufferutil`, `utf-8-validate` 등)이 빌드되므로 OS 빌드 툴체인이 필요할 수 있다(상세는 확인 필요).
+[package.json](../../package.json)에 `packageManager`가 `pnpm@10.11.1`로 고정되어 있으므로 pnpm을 사용한다. 네이티브 모듈(`canvas`, `bufferutil`, `utf-8-validate` 등)이 빌드되므로 OS 빌드 툴체인이 필요할 수 있다(상세는 확인 필요).
 
 ## 3. 환경 변수 설정
 

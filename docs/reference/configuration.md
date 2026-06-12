@@ -27,6 +27,10 @@
 | `AWS_S3_BUCKET_NAME` | 예 | 인증서 이미지 bucket 이름. `PutObjectCommand`/`GetObjectCommand` 의 `Bucket` 에 사용. 단, DELETE 경로는 오타 키를 참조 — [§2.2 DELETE /certs 의 bucket 키 오타](#22-delete-certs-의-bucket-키-오타). |
 | `AWS_S3_ENDPOINT` | 아니오 | S3 호환 스토리지(예: MinIO) 사용 시 endpoint. `S3Client({ endpoint })` 에 전달. 미설정 시 기본 AWS S3 endpoint 사용. |
 
+### 1.1 런타임 의존성 메모
+
+증명서 발급 라우트는 런타임에 `pdfkit` 을 직접 import 하므로, `pdfkit` 은 `dependencies` 에 있어야 한다. 개발용 타입 패키지인 `@types/pdfkit` 만 `devDependencies` 에 둔다.
+
 ## 2. 결함 및 주의
 
 ### 2.1 env.d.ts 타입 선언 불완전 🟠

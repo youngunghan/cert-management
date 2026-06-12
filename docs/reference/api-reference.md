@@ -46,6 +46,7 @@
 | `201` | 생성 성공 | 일부 생성 라우트. **단 라우트별로 일관되지 않음** ([§7](#7-알려진-제약-및-상태)). |
 | `400` | 잘못된 요청 | 필수 필드 누락, UUID 형식 오류, 본문 형식 오류. |
 | `401` | 미인증 | 세션 없음. |
+| `409` | 충돌 | 삭제 대상이 발급 로그 등 DB 제약에 참조되어 삭제 불가. |
 | `403` | 권한 없음 | 세션은 있으나 `Admin` 아님(또는 발급 대상 아님). |
 | `404` | 미존재 | 대상 리소스(cert/user/group/image) 없음. |
 | `500` | 서버 오류 | S3 작업 실패, 생성 결과 없음, 미분류 예외. |
@@ -188,6 +189,7 @@
 | `401` | 세션 없음 | `Unauthorized` envelope |
 | `403` | Admin 아님 | `Forbidden` envelope |
 | `404` | 대상 사용자 없음 | `Not Found` envelope |
+| `409` | 대상 사용자를 참조하는 `CertificateLog` 존재 | `{result:false, error:{title:"Conflict", message:"User has certificate logs and cannot be deleted"}}` |
 
 ### 3.4 POST /api/users/file
 
@@ -244,7 +246,7 @@ CSV 본문(`req.text()`)으로 사용자를 일괄 생성한다. `POST()` 는 `\
 | 상태 | 조건 | 본문 |
 | --- | --- | --- |
 | `200` | 삭제 성공 | `{result:true}` |
-| `400` | `id` 없음 또는 비-UUID | `Bad Request` envelope |
+| `400` | `id` 없음, 비-UUID, 또는 대상 그룹이 `Admin` 그룹 | `Bad Request` envelope |
 | `401` | 세션 없음 | `Unauthorized` envelope |
 | `403` | Admin 아님 | `Forbidden` envelope |
 | `404` | 그룹 없음 | `Not Found` envelope |

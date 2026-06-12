@@ -65,6 +65,16 @@ export async function DELETE(req: Request) {
     });
   }
 
+  if (group.name === "Admin") {
+    return ResponseDTO.status(400).json({
+      result: false,
+      error: {
+        title: "Bad Request",
+        message: "Admin group cannot be deleted",
+      },
+    });
+  }
+
   await prisma.group.delete({
     where: {
       id,

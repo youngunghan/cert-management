@@ -26,7 +26,7 @@ OUTTA 증명서 발급센터: 관리자가 Fabric.js 캔버스로 증명서 템�
 | 문서 | 설명 |
 |---|---|
 | [reference/api-reference.md](reference/api-reference.md) | 전 라우트 명세(certs/users/groups/images/auth) + 응답 envelope |
-| [reference/data-model.md](reference/data-model.md) | Prisma 4 모델(Group/User/Certificate/CertificateLog) 스키마 |
+| [reference/data-model.md](reference/data-model.md) | Prisma 5 모델(Group/User/Certificate/CertificateLog) 스키마 |
 | [reference/cert-content-schema.md](reference/cert-content-schema.md) | `CertContent` 캔버스 레이아웃 JSON 스키마 |
 | [reference/configuration.md](reference/configuration.md) | 환경변수 레퍼런스 |
 

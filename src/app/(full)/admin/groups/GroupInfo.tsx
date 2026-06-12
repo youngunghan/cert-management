@@ -21,12 +21,19 @@ function GroupInfoContent({ group, onClose }: ContentProps) {
   const onDelete = async () => {
     setLoading(true);
 
-    await fetch(`/api/groups/${group.id}`, {
+    const response = await fetch(`/api/groups/${group.id}`, {
       method: "DELETE",
       credentials: "include",
     });
 
     setLoading(false);
+
+    if (!response.ok) {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "사용자 그룹 삭제에 실패했습니다.");
+      return;
+    }
+
     onClose();
     router.refresh();
   };

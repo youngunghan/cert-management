@@ -57,6 +57,9 @@ function CertInfoContent({ cert, users, onClose }: ContentProps) {
 
     if (response.ok) {
       onClose();
+    } else {
+      const { error } = await response.json().catch(() => ({ error: null }));
+      alert(error?.message ?? "증명서 삭제에 실패했습니다.");
     }
   };
 
@@ -102,7 +105,7 @@ function CertInfoContent({ cert, users, onClose }: ContentProps) {
       <div className="flex justify-end">
         <button
           type="button"
-          className="px-4 py-2 bggray-200 focus:bg-gray-300 rounded-md mr-3"
+          className="px-4 py-2 bg-gray-200 focus:bg-gray-300 rounded-md mr-3"
           disabled={loading}
           onClick={onClose}
         >
