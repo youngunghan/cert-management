@@ -2,7 +2,7 @@ import { Canvas } from "fabric/*";
 import { RefObject, useEffect } from "react";
 import { useDebounce } from "./debounce";
 
-export default function debounceFabric<T>(
+export default function useDebounceFabric<T>(
   canvas: RefObject<Canvas | undefined>,
   name: string,
   target: T,

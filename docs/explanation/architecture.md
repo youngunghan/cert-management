@@ -2,7 +2,7 @@
 
 > **범위:** 현행 Next.js 13 App Router 구현의 런타임 아키텍처와 그 설계 결정(왜)을 기술한다. 보안·결함 상세는 [security-and-known-issues.md](./security-and-known-issues.md), 재작성 설계(미구현)는 [rewrite-plan.md](./rewrite-plan.md)에 위임한다.
 > **대상:** 코드베이스를 처음 읽는 개발자, 재작성 계획을 검토하는 메인테이너.
-> **상태:** 구현 반영 — 기준일 2026-06-11.
+> **상태:** 구현 반영 — 기준일 2026-06-12.
 
 이 문서는 **현행(as-is) 구현**만을 정본으로 다룬다. 재작성 계획([plan.md](../plan.md) / [spec.md](../spec.md))의 산출물은 본문에서 '미구현(목표)'로만 언급한다.
 
@@ -21,8 +21,8 @@ OUTTA 증명서 발급센터는 단일 Next.js 13 애플리케이션이다. 화�
 | 인증서 디자이너 | Fabric.js (`fabric 6.0.0-beta7`) | **클라이언트측(CSR)** — `CanvasForm.tsx`, `CertPreview.tsx` |
 | QR 코드 | `qrcode ^1.5.3` | 발급 시 검증 URL 인코딩 |
 | 스타일 | Tailwind CSS `3.3.2` | `tailwind.config.js` |
-| 린터 / 포매터 | Next lint 스크립트 + Rome 설정 | `package.json`의 `lint`는 `next lint`, `rome.json`은 Rome 규칙 설정. 별도 ESLint 설정 파일은 없음. |
-| 패키지 매니저 | pnpm `10.11.1` | `package.json`의 `packageManager` |
+| 린터 / 포매터 | Next lint(ESLint `next/core-web-vitals`) + Rome 설정 | `package.json`의 `lint`는 `next lint`, [.eslintrc.json](../../.eslintrc.json)은 Next 권장 규칙, `rome.json`은 Rome 규칙 설정. |
+| 패키지 매니저 | pnpm `10.11.1` | `package.json`의 `packageManager`와 `engines.pnpm` |
 
 근거 파일: [package.json](../../package.json), [next.config.js](../../next.config.js).
 

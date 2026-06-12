@@ -2,7 +2,7 @@
 
 > **범위:** 현행 Next.js 13 구현([package.json](../../package.json) `next@13.4.19`)의 프로덕션 빌드·배포 절차. build 스크립트, 폰트 워크어라운드, 환경변수, 외부 서비스(CockroachDB / NextAuth / S3) 연결.
 > **대상:** 운영 배포를 수행하는 엔지니어.
-> **상태:** 구현 반영 — 기준일 2026-06-11.
+> **상태:** 구현 반영 — 기준일 2026-06-12.
 
 이 문서는 as-is 구현을 기술한다. `docs/plan.md` / `docs/spec.md`의 Vite + React + FastAPI 재작성은 **설계(미구현)** 이며 본 가이드의 범위가 아니다.
 
@@ -23,6 +23,7 @@ pnpm start             # next start (프로덕션 서버)
 ```
 
 - 패키지 매니저는 `pnpm@10.11.1`로 고정되어 있다([package.json](../../package.json) `packageManager`).
+- Node 런타임은 Node 20.x로 고정한다([.node-version](../../.node-version), [package.json](../../package.json) `engines.node`). `canvas@2.11.2` 네이티브 빌드와 Corepack/pnpm 검증 오류를 피하려면 배포 이미지와 로컬 빌드 모두 Node 20을 사용한다.
 - DB 마이그레이션은 배포 시 별도 적용한다: `pnpm prisma:deploy`(= `prisma migrate deploy`). `scripts.prisma:*`는 모두 `dotenv -c $NODE_ENV` 래퍼를 거치므로 `NODE_ENV`에 맞는 `.env.<NODE_ENV>` 파일이 있어야 한다.
 
 🟠 [next.config.js](../../next.config.js)의 `webpack()`은 `config.externals`에 `sharp: "commonjs sharp"`와 `canvas: "commonjs canvas"`를 추가한다. 즉 두 모듈은 번들에 포함되지 않고 런타임에 `require`로 해석된다. 그러나 `sharp`는 [package.json](../../package.json) `dependencies`에 **없다**(`canvas`만 `^2.11.2`로 선언됨). `sharp`를 실제로 로드하는 코드 경로에 도달하면 모듈 미설치로 실패한다 — 의존 경로 사용 여부는 **확인 필요**. 외부화된 네이티브 모듈은 배포 이미지에 별도 설치가 필요하다.

@@ -2,6 +2,10 @@
   "name": "outta-certs",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "20.x",
+    "pnpm": "10.11.1"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build && ./install.sh",
@@ -47,6 +51,8 @@
     "bufferutil": "^4.0.7",
     "dotenv-cli": "^7.2.1",
     "encoding": "^0.1.13",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "13.4.19",
     "prisma": "^5.1.1",
     "rome": "^12.1.2"
   },

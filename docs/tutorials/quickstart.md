@@ -2,7 +2,7 @@
 
 > **범위:** 현행(as-is) Next.js 13 구현을 개발자 머신에서 처음 실행해 Google 로그인 → 템플릿 생성 → 본인 증명서 발급 → 검증까지 통과하는 happy path.
 > **대상:** 이 repo를 처음 클론한 개발자.
-> **상태:** 구현 반영 — 기준일 2026-06-11.
+> **상태:** 구현 반영 — 기준일 2026-06-12.
 
 이 문서는 현행 Next.js 13(App Router) 구현을 정본으로 기술한다. `docs/plan.md`·`docs/spec.md`의 Vite + React + FastAPI 재작성은 설계(미구현)이며 여기서는 다루지 않는다. 모든 명령은 [package.json](../../package.json)의 실제 `scripts`를 인용한다.
 
@@ -11,7 +11,7 @@
 | 항목 | 값 | 출처 / 확인 |
 | --- | --- | --- |
 | 패키지 매니저 | pnpm 10.11.1 | [package.json](../../package.json) 의 `packageManager` |
-| Node 런타임 | `@types/node` 20.x 기준 (Node 20 권장) | [package.json](../../package.json) 의 `devDependencies` (정확한 최소 버전은 확인 필요) |
+| Node 런타임 | Node 20.x (`20.20.2` 검증) | [.node-version](../../.node-version), [package.json](../../package.json) 의 `engines.node` |
 | 프레임워크 | Next.js 13.4.19 | [package.json](../../package.json) 의 `dependencies.next` |
 | 데이터베이스 | CockroachDB | [schema.prisma](../../prisma/schema.prisma) 의 `datasource db { provider = "cockroachdb" }` |
 | 인증 | Google OAuth (next-auth) | [auth.ts](../../src/lib/auth.ts) 의 `GoogleProvider` |
@@ -25,7 +25,18 @@
 pnpm install
 ```
 
-[package.json](../../package.json)에 `packageManager`가 `pnpm@10.11.1`로 고정되어 있으므로 pnpm을 사용한다. 네이티브 모듈(`canvas`, `bufferutil`, `utf-8-validate` 등)이 빌드되므로 OS 빌드 툴체인이 필요할 수 있다(상세는 확인 필요).
+[package.json](../../package.json)에 `packageManager`와 `engines.pnpm`이 `pnpm@10.11.1`로 고정되어 있으므로 pnpm을 사용한다. Node 23 + Corepack 0.29.x 조합에서는 pnpm 서명 keyid 검증 오류가 날 수 있고, `canvas@2.11.2`가 Node 23 ABI용 사전 빌드 바이너리를 제공하지 않아 설치가 실패할 수 있다. 로컬에서는 Node 20을 PATH 앞에 두고 실행한다.
+
+macOS/Homebrew 환경에서 네이티브 모듈(`canvas`, `bufferutil`, `utf-8-validate` 등)을 소스 빌드해야 하면 다음 도구가 필요하다.
+
+```bash
+brew install node@20 pkg-config cairo pango libpng jpeg-turbo giflib librsvg
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+npm install -g pnpm@10.11.1
+pnpm install
+```
+
+설치 후 `node --version`은 `v20.x`, `pnpm --version`은 `10.11.1`이어야 한다.
 
 ## 3. 환경 변수 설정
 

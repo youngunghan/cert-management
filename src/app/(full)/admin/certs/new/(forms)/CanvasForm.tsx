@@ -4,7 +4,7 @@ import { MutableRefObject, useCallback, useEffect, useState } from "react";
 
 import { Canvas, Object as FabricObject, Image, Rect, Text } from "fabric";
 
-import debounceFabric from "lib/debounceFabric";
+import useDebounceFabric from "lib/debounceFabric";
 
 import IconCenter from "assets/icons/icon_align_center.svg";
 import IconHorizontal from "assets/icons/icon_horizontal.svg";
@@ -52,11 +52,11 @@ export default function CanvasForm({
   const [height, setHeight] = useState(0);
   const [value, setValue] = useState("");
 
-  debounceFabric(fabricRef, "top", top, setTop);
-  debounceFabric(fabricRef, "left", left, setLeft);
-  debounceFabric(fabricRef, "width", width, setWidth);
-  debounceFabric(fabricRef, "height", height, setHeight);
-  debounceFabric(fabricRef, "text", value, setValue);
+  useDebounceFabric(fabricRef, "top", top, setTop);
+  useDebounceFabric(fabricRef, "left", left, setLeft);
+  useDebounceFabric(fabricRef, "width", width, setWidth);
+  useDebounceFabric(fabricRef, "height", height, setHeight);
+  useDebounceFabric(fabricRef, "text", value, setValue);
 
   const [selectedInfo, setSelectedInfo] = useState("선택된 요소가 없습니다.");
 
