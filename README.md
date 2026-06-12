@@ -1,4 +1,15 @@
-This is a certificate management platform based on [Next.js](https://github.com/vercel/next.js) Framework.
+This repository contains the current certificate management platform based on the
+[Next.js](https://github.com/vercel/next.js) framework.
+
+## Documentation
+
+- [docs/plan.md](docs/plan.md): rewrite plan for moving the domain logic to
+  Vite + React + FastAPI.
+- [docs/spec.md](docs/spec.md): target implementation spec for the rewrite.
+
+The files under `docs/` are not a description of the current Next.js runtime as-is.
+They document the intended replacement architecture and the fixes that should be
+carried over from the current implementation.
 
 ## Features
 
@@ -10,7 +21,7 @@ This is a certificate management platform based on [Next.js](https://github.com/
 - [x] User Management
   - [x] Whitelisted User Management
 
-## Depolyment
+## Deployment
 
 ### Environment Variables
 
