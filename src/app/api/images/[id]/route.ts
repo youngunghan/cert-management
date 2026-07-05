@@ -47,9 +47,26 @@ export async function GET(req: Request) {
 
     const body = await response.Body.transformToByteArray();
 
+    // SECURITY: restrict the served type to known images and forbid MIME
+    // sniffing, so a mislabeled object cannot be interpreted as active content.
+    const detected = mime.contentType(id);
+    const baseType =
+      typeof detected === "string" ? detected.split(";")[0] : "";
+    const ALLOWED_IMAGE_TYPES = [
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+      "image/webp",
+    ];
+    const contentType = ALLOWED_IMAGE_TYPES.includes(baseType)
+      ? baseType
+      : "application/octet-stream";
+
     return new Response(body, {
       headers: {
-        "Content-Type": mime.contentType(id) || "application/octet-stream",
+        "Content-Type": contentType,
+        "X-Content-Type-Options": "nosniff",
+        "Content-Disposition": "inline",
       },
     });
   } catch (err) {

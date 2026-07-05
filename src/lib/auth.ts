@@ -17,6 +17,12 @@ const authOptions = {
         const googleProfile = profile as GoogleProfile;
         const googleId = googleProfile.sub;
 
+        // SECURITY: reject unverified Google emails. Email is the account-linking
+        // key below, so accepting an unverified email enables account takeover.
+        if (!googleProfile.email_verified) {
+          return false;
+        }
+
         if (
           process.env.DEFAULT_ADMIN_EMAIL &&
           googleProfile.email === process.env.DEFAULT_ADMIN_EMAIL
@@ -66,14 +72,23 @@ const authOptions = {
           return "/unregistered";
         }
 
-        await prisma.user.update({
-          where: {
-            id: databaseUser.id,
-          },
-          data: {
-            googleId,
-          },
-        });
+        // SECURITY: only bind googleId on first sign-in. If an account already
+        // has a googleId and the incoming sub differs, refuse — otherwise another
+        // Google account sharing this email could overwrite the binding (takeover).
+        if (databaseUser.googleId && databaseUser.googleId !== googleId) {
+          return false;
+        }
+
+        if (!databaseUser.googleId) {
+          await prisma.user.update({
+            where: {
+              id: databaseUser.id,
+            },
+            data: {
+              googleId,
+            },
+          });
+        }
 
         return true;
       }
